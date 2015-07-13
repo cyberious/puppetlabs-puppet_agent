@@ -12,15 +12,14 @@ class puppet_agent::params {
   # function is available
   $_is_pe = ($::is_pe or is_function_available('pe_compiling_server_version'))
 
-  # In Puppet Enterprise, agent packages are provided by the master
-  # with a default prefix of `/packages`.
-  $_source = $_is_pe ? {
-    true    => "https://${::servername}:8140/packages",
-    default => undef,
-  }
-
   case $::osfamily {
     'RedHat', 'Amazon', 'Debian', 'Suse': {
+    # In Puppet Enterprise, agent packages are provided by the master
+    # with a default prefix of `/packages`.
+      $_source = $_is_pe ? {
+        true    => "https://${::servername}:8140/packages",
+        default => undef,
+      }
       $package_name = 'puppet-agent'
       $service_names = ['puppet', 'mcollective']
 
